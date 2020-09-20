@@ -61,9 +61,12 @@ class SongwhipBot(Plugin):
             return await resp.json()
 
     @command.new("songwhip", aliases=("song",))
-    @command.argument("url", matches=url_pattern.pattern)
+    @command.argument("url", pass_raw=True)
     async def on_command(self, evt: MessageEvent, url: str) -> None:
-        if not check_url(url):
+        if not url_pattern.fullmatch(url):
+            await evt.reply("That doesn't look like a URL 🧐")
+            return
+        elif not check_url(url):
             await evt.reply("That doesn't look like a supported music URL 🤔")
             return
         await evt.mark_read()
