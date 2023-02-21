@@ -54,8 +54,8 @@ def check_url(url: str) -> bool:
 
 class SongwhipBot(Plugin):
     async def get_meta(self, url: str) -> Optional[Dict[str, Any]]:
-        async with self.http.post("https://songwhip.com", data=url) as resp:
-            if resp.status == 404:
+        async with self.http.post("https://songwhip.com/api/songwhip/create", json={"country": "N/A", "url": url}) as resp:
+            if resp.status == 400:
                 return None
             resp.raise_for_status()
             return await resp.json()
@@ -84,7 +84,10 @@ class SongwhipBot(Plugin):
             if check_url(url):
                 await evt.mark_read()
                 meta = await self.get_meta(url)
-                if not meta or "url" not in meta:
+                if not meta or meta.get("status") != "success":
                     continue
-                await evt.reply(meta["url"])
+                path = meta.get("data", {}).get("item", {}).get("path")
+                if not path:
+                    continue
+                await evt.reply(f"https://songwhip.com/{path}")
                 break
