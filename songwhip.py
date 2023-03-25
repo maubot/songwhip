@@ -24,6 +24,7 @@ allowed_domains: Dict[str, Pattern] = {
     "deezer.com": re.compile(r"/(?:\w{2}/)?(?:album|artist|track)/(?:.+)"),
     "play.google.com": re.compile(r"/music/.+/[BAT][a-z0-9]+"),
     "youtube.com": re.compile(r"/watch"),
+    "music.youtube.com": re.compile(r"/watch"),
     "youtu.be": anything,
     "tidal.com": tidal_pattern,
     "listen.tidal.com": tidal_pattern,
